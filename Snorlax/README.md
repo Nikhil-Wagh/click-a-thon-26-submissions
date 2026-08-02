@@ -16,6 +16,51 @@ Snorlax answers *"how many sessions are truly watching, right now?"* — not how
 
 ---
 
+## 📋 Submission
+
+**Team Name:** Snorlax
+
+### Track
+
+**SonyLIV** — real-time concurrency at streaming scale on ClickHouse.
+
+### Project
+
+**Snorlax** — *Foreground-only concurrency, at streaming scale — on ClickHouse.*
+
+### Team Members
+
+- Nikhil Wagh
+- Tarun Anand
+- Monika Nayak
+- Abhishek Surve
+
+### What it does
+
+Snorlax answers *"how many sessions are truly watching, right now?"* — not how many are open, paused, backgrounded, or silently timed out. A CSV-replaying producer streams session events through Redpanda → ClickPipes → ClickHouse; an active-interval state machine turns raw `play` / `pause` / `background` / `heartbeat` / `ad` events into truly-active windows per session; and a hot/cold tiered serving layer answers every concurrency query as `filter → sum → max/avg`, with zero full-history rescans. Every served number is cross-checked against an independent raw-events oracle. (Full detail in [What it does](#-what-it-does) below.)
+
+### Hosted Demo
+
+🖥️ **[Hosted demo (Google Drive)](https://drive.google.com/drive/folders/1ZBgu-ubutGvgHx7VvPi2Tf8M6kyegFPR)** — live product dashboard walkthrough. The Streamlit app is also live at **[snorlax.streamlit.app](https://snorlax.streamlit.app/)** — real-time concurrency curve, dimension filters, KPI tiles, and Daily Wrapped, reading straight off the serving layer. See [See it live](#-see-it-live) for the engine-plane ClickStack / HyperDX dashboards that prove the pipeline is fast, healthy, and correct.
+
+### Demo Video
+
+🎥 **[Demo video (Google Drive)](https://drive.google.com/drive/folders/1ZBgu-ubutGvgHx7VvPi2Tf8M6kyegFPR)** — 2–3 minute walkthrough.
+
+### Architecture
+
+See [Architecture](#-architecture) below for the full pipeline diagram, [`docs/DATA_FLOW.md`](docs/DATA_FLOW.md) for the traced-from-code data flow, and [`docs/SCHEMA.md`](docs/SCHEMA.md) for every table's DDL and reasoning.
+
+### How we built it
+
+**ClickHouse Cloud** for storage and the tiered serving layer; a **Python** CSV-replay producer streaming into **Redpanda → ClickPipes**; an active-interval **state machine** with deterministic same-millisecond tie-breaking; **Streamlit + clickhouse-connect + Plotly** for the product dashboard; **ClickStack (HyperDX)** for engine observability with **OpenTelemetry** traces from the dashboard; and an **Insights Copilot** built on **LibreChat + ClickHouse/ClickStack MCP** on a local **Ollama** model, traced by **Langfuse**. See [How we built it](#-integrations--four-planes-each-with-a-job) and [Design principles](#-design-principles) for the reasoning.
+
+### How to run it
+
+Quickstart is in [Runbook — running it locally](#-runbook--running-it-locally); the full contributor guide is in [SETUP.md](SETUP.md).
+
+---
+
 ## 🔗 See it live
 
 One system, watched at **two altitudes** — the product plane the business reads, and the engine plane the operators trust it on.
